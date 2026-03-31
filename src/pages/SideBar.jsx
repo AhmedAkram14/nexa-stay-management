@@ -3,6 +3,7 @@ import React from 'react';
 import { HiOutlineBars3 } from 'react-icons/hi2';
 import styled from 'styled-components';
 
+import Uploader from '../data/Uploader';
 import Logo from '../ui/Logo';
 import MainNav from '../ui/MainNav';
 
@@ -92,6 +93,7 @@ const SideBar = ({ collapsed = false, onToggle = () => {} }) => {
       <Body>
         <Logo collapsed={collapsed} />
         <MainNav collapsed={collapsed} />
+        // <Uploader />
       </Body>
     </StyledSideBar>
   );
