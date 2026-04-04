@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
@@ -5,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { DarkModeProvider } from "./context/DarkModeContext";
+import { uploadAllData } from "./data/uploadService";
 import Account from "./pages/Account";
 import AppLayout from "./pages/AppLayout";
 import Booking from "./pages/Booking";
@@ -29,6 +32,26 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
+  useEffect(() => {
+    async function runUpload() {
+      console.log("Checking upload...");
+
+      const lastRun = localStorage.getItem("lastUpload");
+
+      if (!lastRun || Date.now() - Number(lastRun) > 24 * 60 * 60 * 1000) {
+        console.log("Uploading data...");
+        await uploadAllData();
+
+        localStorage.setItem("lastUpload", Date.now().toString());
+      }
+    }
+
+    runUpload();
+
+    const interval = setInterval(runUpload, 24 * 60 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <DarkModeProvider>
       <QueryClientProvider client={queryClient}>
