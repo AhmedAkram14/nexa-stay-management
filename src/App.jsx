@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
@@ -32,25 +32,14 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
+  const hasRun = useRef(false);
+
   useEffect(() => {
-    async function runUpload() {
-      console.log("Checking upload...");
+    if (hasRun.current) return;
 
-      const lastRun = localStorage.getItem("lastUpload");
+    hasRun.current = true;
 
-      if (!lastRun || Date.now() - Number(lastRun) > 24 * 60 * 60 * 1000) {
-        console.log("Uploading data...");
-        await uploadAllData();
-
-        localStorage.setItem("lastUpload", Date.now().toString());
-      }
-    }
-
-    runUpload();
-
-    const interval = setInterval(runUpload, 24 * 60 * 60 * 1000);
-
-    return () => clearInterval(interval);
+    uploadAllData();
   }, []);
   return (
     <DarkModeProvider>
